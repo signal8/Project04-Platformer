@@ -8,6 +8,10 @@ public class CameraFollow : MonoBehaviour {
 	public float lookAheadDstX;
 	public float lookSmoothTimeX;
 	public float verticalSmoothTime;
+	public float horizontalBoundsLeft;
+	public float horizontalBoundsRight;
+	public float verticalBoundsTop;
+	public float verticalBoundsBottom;
 	public Vector2 focusAreaSize;
 
 	FocusArea focusArea;
@@ -25,7 +29,8 @@ public class CameraFollow : MonoBehaviour {
 	}
 
 	void LateUpdate() {
-		focusArea.Update (target.collider.bounds);
+
+		focusArea.Update (target.collider.bounds, transform, horizontalBoundsLeft, horizontalBoundsRight, verticalBoundsTop, verticalBoundsBottom);
 
 		Vector2 focusPosition = focusArea.centre + Vector2.up * verticalOffset;
 
@@ -48,7 +53,14 @@ public class CameraFollow : MonoBehaviour {
 
 		focusPosition.y = Mathf.SmoothDamp (transform.position.y, focusPosition.y, ref smoothVelocityY, verticalSmoothTime);
 		focusPosition += Vector2.right * currentLookAheadX;
+		
 		transform.position = (Vector3)focusPosition + Vector3.forward * -10;
+
+		if (horizontalBoundsLeft > transform.position.x) transform.position = new Vector3(horizontalBoundsLeft, transform.position.y, -10);
+		if (horizontalBoundsRight < transform.position.x) transform.position = new Vector3(horizontalBoundsRight, transform.position.y, -10);
+		if (verticalBoundsBottom > transform.position.y) transform.position = new Vector3(transform.position.x, verticalBoundsBottom, -10);
+		if (verticalBoundsTop < transform.position.y) transform.position = new Vector3(transform.position.x, verticalBoundsTop, -10);
+
 	}
 
 	void OnDrawGizmos() {
@@ -73,20 +85,20 @@ public class CameraFollow : MonoBehaviour {
 			centre = new Vector2((left+right)/2,(top +bottom)/2);
 		}
 
-		public void Update(Bounds targetBounds) {
+		public void Update(Bounds targetBounds, Transform t, float leftBounds, float rightBounds, float topBounds, float bottomBounds) {
 			float shiftX = 0;
-			if (targetBounds.min.x < left) {
+			if (targetBounds.min.x < left && t.position.x > leftBounds) {
 				shiftX = targetBounds.min.x - left;
-			} else if (targetBounds.max.x > right) {
+			} else if (targetBounds.max.x > right && t.position.x < rightBounds) {
 				shiftX = targetBounds.max.x - right;
 			}
 			left += shiftX;
 			right += shiftX;
 
 			float shiftY = 0;
-			if (targetBounds.min.y < bottom) {
+			if (targetBounds.min.y < bottom && t.position.y > bottomBounds) {
 				shiftY = targetBounds.min.y - bottom;
-			} else if (targetBounds.max.y > top) {
+			} else if (targetBounds.max.y > top && t.position.y < (topBounds - 2)) {
 				shiftY = targetBounds.max.y - top;
 			}
 			top += shiftY;
