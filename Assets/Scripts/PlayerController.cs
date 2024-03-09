@@ -62,7 +62,7 @@ public class PlayerController : MonoBehaviour
 			return;
 		}
 
-		if (bulletTimer > 0) bulletTimer -= Time.deltaTime;
+		//if (bulletTimer > 0) bulletTimer -= Time.deltaTime;
 
         	Vector2 dirInput = Vector2.zero;
 		dirInput.x = Input.GetAxis("Horizontal");
@@ -98,13 +98,13 @@ public class PlayerController : MonoBehaviour
 		else if (Input.GetButtonUp("Fire1")) p.OnJumpInputUp();
 
 
-		if (Input.GetButtonDown("Fire2")) 
+		/*if (Input.GetButtonDown("Fire2")) 
 		{
 			FireBullet(sr.flipX);
 			anim.SetBool("isGunning", true);
 		}
 		else if (Input.GetButtonUp("Fire2")) 
-			anim.SetBool("isGunning", false);
+			anim.SetBool("isGunning", false);*/
 	
 
 		if (c2d.collisions.below) 
@@ -149,7 +149,7 @@ public class PlayerController : MonoBehaviour
 	{
 		controllable = true;
 		anim.SetBool("isDead", false);
-		b2d.size = new Vector2(1, 1.8f);
+		b2d.size = new Vector2(0.6f, 0.8f);
 	}
 
 	void Pause()
@@ -157,6 +157,6 @@ public class PlayerController : MonoBehaviour
 		die.Play();
 		controllable = false;
 		anim.SetBool("isDead", true);
-		b2d.size = new Vector2(1, 0.8f);
+		b2d.size = new Vector2(0.1f, 0.1f);
 	}
 }

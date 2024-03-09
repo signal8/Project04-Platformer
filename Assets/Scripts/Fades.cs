@@ -35,7 +35,7 @@ public class Fades : MonoBehaviour
 			timer += Time.deltaTime / 2;
 			if (timer >= 0.25f)
 			{
-				SceneManager.LoadScene(0);
+				SceneManager.LoadScene(1);
 			}
 		}
 	}
